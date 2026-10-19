@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Passport Photo Studio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#2b3dff;--panel:#fff;--ink:#0b0d2b;--mute:#4b5180;--line:#cfd3f5;--edge:#0b0d2b;--acc:#ffd23f;--accink:#0b0d2b;--hot:#ff5d73;--soft:#eef0ff;--stage:#141b80;--spot:#4a5dff;--onbg:#fff;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0e2a;--panel:#171a44;--ink:#f1f3ff;--mute:#a4abe0;--line:#2d3270;--edge:#5b66ff;--soft:#222762;--stage:#080a20;--spot:#1d2368;--onbg:#f1f3ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0e2a;--panel:#171a44;--ink:#f1f3ff;--mute:#a4abe0;--line:#2d3270;--edge:#5b66ff;--soft:#222762;--stage:#080a20;--spot:#1d2368;--onbg:#f1f3ff;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg) radial-gradient(rgba(255,255,255,.16) 1.5px,transparent 1.6px) 0 0/22px 22px;color:var(--ink);font:15px/1.5 "DM Sans",system-ui,"Segoe UI",sans-serif;min-height:100vh}
+header{padding:28px 28px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--onbg)}
+header h1{margin:0;font:800 clamp(30px,5vw,52px)/1 "Bricolage Grotesque","DM Sans",sans-serif;letter-spacing:-.03em}
+header p{margin:10px 0 0;font-size:16px;opacity:.9;max-width:520px}
+.strip{display:flex;gap:6px;background:#fff;padding:9px;border:2px solid var(--edge);border-radius:10px;transform:rotate(3deg);box-shadow:5px 5px 0 var(--edge)}
+.strip span{width:38px;height:50px;border-radius:4px;border:1px solid #0002;background:radial-gradient(circle at 50% 36%,#f0b088 0 21%,transparent 22%),radial-gradient(ellipse at 50% 108%,var(--c) 0 50%,transparent 51%),#d6e6ff}
+.app{display:grid;grid-template-columns:310px minmax(320px,1fr) minmax(330px,1.1fr);gap:24px;padding:0 28px 40px;align-items:start}
+@media(max-width:1100px){.app{grid-template-columns:1fr 1fr}.sheetcol{grid-column:1/-1}}
+@media(max-width:700px){.app{grid-template-columns:1fr;padding:0 14px 28px;gap:18px}header{padding:20px 14px 16px}}
+.card{background:var(--panel);border:2px solid var(--edge);border-radius:16px;box-shadow:6px 6px 0 var(--edge);padding:18px;margin-bottom:24px}
+.card h2{margin:0 0 12px;font:800 19px/1.1 "Bricolage Grotesque","DM Sans",sans-serif;display:flex;align-items:center;gap:9px}
+.card h2::before{content:"";width:13px;height:13px;background:var(--hot);border:2px solid var(--edge);border-radius:3px;transform:rotate(45deg)}
+.row{display:flex;gap:8px;align-items:center;margin:10px 0}
+.row label{flex:0 0 88px;color:var(--mute);font-size:13px;font-weight:700}
+.row input[type=range]{flex:1;accent-color:var(--hot)}
+.row input[type=color]{width:46px;height:30px;border:2px solid var(--edge);border-radius:6px;padding:0;background:none}
+.row input[type=checkbox],#land,#cut{width:18px;height:18px;accent-color:var(--hot)}
+.row output{flex:0 0 46px;text-align:right;font-size:12px;font-weight:700;color:var(--mute)}
+select,input[type=number]{width:100%;padding:9px;border:2px solid var(--edge);border-radius:9px;background:var(--panel);color:var(--ink);font:inherit;font-weight:500}
+button{font:inherit;font-weight:700;cursor:pointer;border:2px solid var(--edge);background:var(--panel);color:var(--ink);padding:9px 14px;border-radius:10px;box-shadow:3px 3px 0 var(--edge);transition:transform .12s,box-shadow .12s}
+button:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--edge)}
+button:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--edge)}
+button.pri{background:var(--acc);color:var(--accink)}
+#dlPng{background:var(--hot);color:#fff}
+:focus-visible{outline:3px solid var(--hot);outline-offset:2px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.drop{border:3px dashed var(--edge);border-radius:14px;padding:26px 16px;text-align:center;color:var(--ink);font-weight:700;background:var(--soft);cursor:pointer;transition:background .15s}
+.drop::before{content:"＋";display:block;font-size:34px;line-height:1;color:var(--hot);margin-bottom:4px}
+.drop small{font-weight:400;color:var(--mute)}
+.drop:hover,.drop.over{background:var(--acc);color:var(--accink)}
+.drop:hover small,.drop.over small{color:var(--accink)}
+#list{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;margin-top:12px}
+.th{position:relative;border:2px solid var(--edge);border-radius:10px;overflow:hidden;cursor:pointer;background:var(--stage)}
+.th.on{box-shadow:0 0 0 3px var(--hot)}
+.th img{display:block;width:100%;height:88px;object-fit:cover}
+.th label{display:flex;align-items:center;gap:4px;padding:4px 5px;font-size:11px;font-weight:700;background:var(--panel);color:var(--mute)}
+.th input{width:100%;padding:2px 4px;font-size:12px;border-width:1px}
+.th button{position:absolute;top:4px;right:4px;padding:0 6px;line-height:20px;font-size:12px;border-radius:6px;box-shadow:none;background:var(--hot);color:#fff}
+.stage{background:radial-gradient(circle at 50% 30%,var(--spot) 0,var(--stage) 75%);border:2px solid var(--edge);border-radius:12px;padding:30px 14px;display:flex;justify-content:center}
+#ed{touch-action:none;cursor:grab;display:block;outline:7px solid #fff;box-shadow:0 0 0 9px var(--edge),0 18px 34px rgba(0,0,0,.5)}
+#ed:active{cursor:grabbing}
+.hint{color:var(--mute);font-size:12.5px;margin:10px 0 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two label{font-weight:700}
+#sheet{width:100%;height:auto;display:block;background:#fff;border:2px solid var(--edge);border-radius:4px;box-shadow:6px 6px 0 var(--hot)}
+.info{font-size:13px;color:var(--mute);margin:12px 0;padding:9px 12px;background:var(--soft);border:2px dashed var(--edge);border-radius:10px}
+.info b{color:var(--ink)}
+.warn{color:#d62839;font-weight:700}
+.bgbox{margin-top:14px;padding:12px;border:2px dashed var(--edge);border-radius:12px;background:var(--soft)}.bgbox>button{width:100%}
+#printArea{display:none}
+@media print{body>*:not(#printArea){display:none!important}#printArea{display:block}#printArea img{display:block;width:100%;height:100%}}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+</head>
+<body>
+<header><div><h1>Passport Photo Studio</h1><p>Upload, crop to size, fix the light, then fill a whole print sheet in one click.</p></div>
+<div class="strip" aria-hidden="true"><span style="--c:#ff5d73"></span><span style="--c:#ffd23f"></span><span style="--c:#3ddc97"></span><span style="--c:#7b61ff"></span></div></header>
+
+<main class="app">
+  <section>
+    <div class="card">
+      <h2>Photos</h2>
+      <div class="drop" id="drop" tabindex="0">Click or drop photos here<br><small>You can add many</small></div>
+      <input type="file" id="file" accept="image/*" multiple hidden>
+      <div id="list"></div>
+    </div>
+    <div class="card">
+      <h2>Photo size</h2>
+      <select id="size"></select>
+      <div class="two" id="custom" hidden style="margin-top:8px">
+        <input type="number" id="cw" value="35" min="10" max="200" step="0.5" aria-label="Width in mm">
+        <input type="number" id="ch" value="45" min="10" max="200" step="0.5" aria-label="Height in mm">
+      </div>
+      <p class="hint" id="sizeNote"></p>
+    </div>
+    <div class="card">
+      <h2>Adjust</h2>
+      <div class="row"><label for="zoom">Zoom</label><input type="range" id="zoom" min="1" max="4" step="0.01" value="1"><output></output></div>
+      <div class="row"><label for="ang">Tilt</label><input type="range" id="ang" min="-45" max="45" step="0.5" value="0"><output></output></div>
+      <div class="row"><label for="br">Brightness</label><input type="range" id="br" min="40" max="180" value="100"><output></output></div>
+      <div class="row"><label for="co">Contrast</label><input type="range" id="co" min="50" max="170" value="100"><output></output></div>
+      <div class="row"><label for="sa">Saturation</label><input type="range" id="sa" min="0" max="200" value="100"><output></output></div>
+      <div class="row"><label for="bg">Fill colour</label><input type="color" id="bg" value="#ffffff"></div>
+      <div class="row"><label for="guide">Face guide</label><input type="checkbox" id="guide" checked></div>
+      <div class="bgbox">
+        <button class="pri" id="rmbg">✨ Remove background</button>
+        <div class="row"><label for="cutOn">Use cutout</label><input type="checkbox" id="cutOn"></div>
+        <div class="row"><label for="tol">Sensitivity</label><input type="range" id="tol" min="8" max="90" value="35"><output></output></div>
+        <div class="row"><label for="trim">Edge trim</label><input type="range" id="trim" min="0" max="5" value="1"><output></output></div>
+        <div class="row"><label for="ai">AI mode</label><input type="checkbox" id="ai" checked></div>
+        <p class="hint" id="bgStatus">Select a photo, press the button, then pick a Fill colour (white or light blue).</p>
+      </div>
+      <div class="btns">
+        <button id="rotL">Rotate left</button><button id="rotR">Rotate right</button>
+        <button id="flip">Flip</button><button id="reset">Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2>Crop and edit</h2>
+      <div class="stage"><canvas id="ed"></canvas></div>
+      <p class="hint">Drag the photo to position it. Scroll or use Zoom to resize. Keep the face inside the oval guide.</p>
+      <div class="btns"><button id="dlOne">⬇ Download this photo</button></div>
+    </div>
+  </section>
+
+  <section class="sheetcol">
+    <div class="card">
+      <h2>Print sheet</h2>
+      <div class="two">
+        <select id="paper" aria-label="Paper size"></select>
+        <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="land"> Landscape</label>
+      </div>
+      <div class="row"><label for="gap">Gap</label><input type="range" id="gap" min="0" max="10" step="0.5" value="2"><output></output></div>
+      <div class="row"><label for="margin">Margin</label><input type="range" id="margin" min="0" max="20" step="0.5" value="5"><output></output></div>
+      <div class="row"><label for="cut">Cut lines</label><input type="checkbox" id="cut" checked></div>
+      <div class="btns">
+        <button class="pri" id="fill">⚡ Fill page with selected photo</button>
+        <button id="split">Share page equally</button>
+      </div>
+      <p class="info" id="info"></p>
+      <canvas id="sheet"></canvas>
+      <div class="btns">
+        <button class="pri" id="dlPng">⬇ Download PNG</button>
+        <button id="dlJpg">⬇ Download JPG</button>
+        <button id="print">🖨 Print</button>
+      </div>
+      <p class="hint">Files are made at 300 dpi, so photos print at their true size. Print at 100% scale, not “fit to page”.</p>
+    </div>
+  </section>
+</main>
+<div id="printArea"><img alt="Print sheet"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const SIZES=[["35 × 45 mm · Standard passport",35,45],["2 × 2 inch · USA, India",50.8,50.8],["40 × 50 mm · Visa",40,50],["45 × 55 mm · Visa",45,55],["30 × 40 mm",30,40],["25 × 35 mm · Small",25,35],["20 × 25 mm · Stamp",20,25]];
+const PAPER=[["A4 · 210 × 297 mm",210,297],["4 × 6 inch",101.6,152.4],["5 × 7 inch",127,177.8],["Letter · 8.5 × 11 in",215.9,279.4],["A5 · 148 × 210 mm",148,210]];
+$('#size').innerHTML=SIZES.map((s,i)=>`<option value="${i}">${s[0]}</option>`).join('')+'<option value="c">Custom size…</option>';
+$('#paper').innerHTML=PAPER.map((s,i)=>`<option value="${i}">${s[0]}</option>`).join('');
+
+const S={w:35,h:45};
+let photos=[],cur=-1;
+const P=()=>photos[cur];
+const ed=$('#ed'),ec=ed.getContext('2d'),sh=$('#sheet');
+
+function drawPhoto(p,c,W,H){
+  c.save();c.fillStyle=$('#bg').value;c.fillRect(0,0,W,H);
+  const im=p.cutOn&&p.cut?p.cut:p.img,odd=p.q%2,iw=odd?im.height:im.width,ih=odd?im.width:im.height;
+  const k=Math.max(W/iw,H/ih)*p.zoom;
+  c.filter=`brightness(${p.br}%) contrast(${p.co}%) saturate(${p.sa}%)`;
+  c.translate(W/2+p.ox*W,H/2+p.oy*H);c.rotate((p.q*90+p.ang)*Math.PI/180);c.scale(k*(p.flip?-1:1),k);
+  c.drawImage(im,-im.width/2,-im.height/2);c.restore();
+}
+
+function sizeEditor(){
+  const k=Math.min(380/S.w,460/S.h);
+  ed.style.width=S.w*k+'px';ed.style.height=S.h*k+'px';
+  ed.width=Math.round(S.w*k*2);ed.height=Math.round(S.h*k*2);
+}
+function drawEditor(){
+  const W=ed.width,H=ed.height;
+  if(cur<0){ec.fillStyle='#e4e8ec';ec.fillRect(0,0,W,H);ec.fillStyle='#5d6b78';ec.font=`${W/14}px sans-serif`;ec.textAlign='center';ec.fillText('Add a photo to begin',W/2,H/2);return}
+  drawPhoto(P(),ec,W,H);
+  if($('#guide').checked){
+    ec.save();ec.lineWidth=2;ec.setLineDash([10,8]);ec.strokeStyle='rgba(255,255,255,.95)';ec.shadowColor='rgba(0,0,0,.7)';ec.shadowBlur=3;
+    ec.beginPath();ec.ellipse(W/2,H*.46,W*.26,H*.34,0,0,Math.PI*2);ec.stroke();
+    ec.beginPath();ec.moveTo(W*.1,H*.38);ec.lineTo(W*.9,H*.38);ec.stroke();ec.restore();
+  }
+}
+
+function paper(){let [,W,H]=PAPER[$('#paper').value];if($('#land').checked)[W,H]=[H,W];return{W,H}}
+function grid(){
+  const {W,H}=paper(),g=+$('#gap').value,m=+$('#margin').value;
+  return{W,H,g,m,cols:Math.max(0,Math.floor((W-2*m+g)/(S.w+g))),rows:Math.max(0,Math.floor((H-2*m+g)/(S.h+g)))};
+}
+function drawSheet(cv,ppm){
+  const G=grid(),c=cv.getContext('2d');
+  cv.width=Math.round(G.W*ppm);cv.height=Math.round(G.H*ppm);
+  c.fillStyle='#fff';c.fillRect(0,0,cv.width,cv.height);
+  const tw=Math.round(S.w*ppm),th=Math.round(S.h*ppm),cache=new Map();
+  const list=photos.flatMap(p=>Array(p.copies).fill(p)).slice(0,G.cols*G.rows);
+  const x0=(G.W-(G.cols*S.w+(G.cols-1)*G.g))/2;
+  list.forEach((p,i)=>{
+    if(!cache.has(p)){const t=document.createElement('canvas');t.width=tw;t.height=th;drawPhoto(p,t.getContext('2d'),tw,th);cache.set(p,t)}
+    const x=Math.round((x0+(i%G.cols)*(S.w+G.g))*ppm),y=Math.round((G.m+Math.floor(i/G.cols)*(S.h+G.g))*ppm);
+    c.drawImage(cache.get(p),x,y);
+    if($('#cut').checked){c.strokeStyle='#9aa4ad';c.lineWidth=Math.max(1,ppm/6);c.strokeRect(x+.5,y+.5,tw-1,th-1)}
+  });
+  return{G,placed:list.length};
+}
+function updateSheet(){
+  const {G,placed}=drawSheet(sh,6),want=photos.reduce((a,p)=>a+p.copies,0),cap=G.cols*G.rows;
+  $('#info').innerHTML=`<b>${G.cols} × ${G.rows}</b> fits (${cap} photos per page). Placed <b>${placed}</b>`+(want>cap?` <span class="warn">· ${want-cap} extra copies do not fit</span>`:'');
+}
+let raf=0;
+function redraw(){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{drawEditor();updateSheet()})}
+function refreshAll(){sizeEditor();redraw();$('#sizeNote').textContent=`${S.w} × ${S.h} mm · ${Math.round(S.w/25.4*300)} × ${Math.round(S.h/25.4*300)} px at 300 dpi. Check your country’s official photo rules.`}
+
+/* photos */
+function addFiles(files){
+  [...files].filter(f=>f.type.startsWith('image/')).forEach(f=>{
+    const url=URL.createObjectURL(f),img=new Image();
+    img.onload=()=>{photos.push({img,url,q:0,ang:0,zoom:1,ox:0,oy:0,br:100,co:100,sa:100,flip:false,copies:photos.length?0:6});select(photos.length-1)};
+    img.src=url;
+  });
+}
+function thumbs(){
+  $('#list').innerHTML=photos.map((p,i)=>`<div class="th ${i==cur?'on':''}" data-i="${i}"><img src="${p.url}" alt="Photo ${i+1}"><label>Copies<input type="number" min="0" max="99" value="${p.copies}" data-c="${i}"></label><button data-x="${i}" title="Remove photo" aria-label="Remove photo">✕</button></div>`).join('');
+}
+function sync(){
+  const p=P();if(!p)return;
+  ['zoom','ang','br','co','sa'].forEach(k=>{$('#'+k).value=p[k]});$('#cutOn').checked=!!p.cutOn;outs();
+}
+function outs(){document.querySelectorAll('.row output').forEach(o=>{const i=o.previousElementSibling;o.textContent=i.id=='zoom'?(+i.value).toFixed(2)+'×':i.id=='ang'?i.value+'°':i.id=='trim'?i.value+' px':['gap','margin'].includes(i.id)?i.value+' mm':i.value+'%'})}
+function select(i){cur=i;sync();thumbs();refreshAll()}
+$('#list').addEventListener('click',e=>{
+  if(e.target.dataset.x!==undefined){const i=+e.target.dataset.x;URL.revokeObjectURL(photos[i].url);photos.splice(i,1);cur=Math.min(cur,photos.length-1);if(cur<0&&photos.length)cur=0;sync();thumbs();redraw();return}
+  if(e.target.dataset.c!==undefined)return;
+  const t=e.target.closest('.th');if(t)select(+t.dataset.i);
+});
+$('#list').addEventListener('input',e=>{if(e.target.dataset.c!==undefined){photos[+e.target.dataset.c].copies=Math.max(0,Math.min(99,+e.target.value||0));updateSheet()}});
+$('#drop').onclick=()=>$('#file').click();
+$('#drop').onkeydown=e=>{if(e.key=='Enter'||e.key==' ')$('#file').click()};
+$('#file').onchange=e=>{addFiles(e.target.files);e.target.value=''};
+['dragover','dragenter'].forEach(n=>$('#drop').addEventListener(n,e=>{e.preventDefault();$('#drop').classList.add('over')}));
+['dragleave','drop'].forEach(n=>$('#drop').addEventListener(n,e=>{e.preventDefault();$('#drop').classList.remove('over')}));
+$('#drop').addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+
+/* controls */
+['zoom','ang','br','co','sa'].forEach(k=>$('#'+k).addEventListener('input',e=>{if(P()){P()[k]=+e.target.value}outs();redraw()}));
+['bg','guide','cut','land','paper'].forEach(k=>$('#'+k).addEventListener('input',redraw));
+['gap','margin'].forEach(k=>$('#'+k).addEventListener('input',()=>{outs();redraw()}));
+$('#rotL').onclick=()=>{if(P()){P().q=(P().q+3)%4;redraw()}};
+$('#rotR').onclick=()=>{if(P()){P().q=(P().q+1)%4;redraw()}};
+$('#flip').onclick=()=>{if(P()){P().flip=!P().flip;redraw()}};
+$('#reset').onclick=()=>{if(P()){Object.assign(P(),{q:0,ang:0,zoom:1,ox:0,oy:0,br:100,co:100,sa:100,flip:false});sync();redraw()}};
+function setSize(){
+  const v=$('#size').value;$('#custom').hidden=v!=='c';
+  if(v==='c'){S.w=+$('#cw').value||35;S.h=+$('#ch').value||45}else{S.w=SIZES[v][1];S.h=SIZES[v][2]}
+  refreshAll();
+}
+['size','cw','ch'].forEach(k=>$('#'+k).addEventListener('input',setSize));
+
+/* editor drag + wheel */
+let drag=null;
+ed.onpointerdown=e=>{if(!P())return;drag={x:e.clientX,y:e.clientY,ox:P().ox,oy:P().oy};ed.setPointerCapture(e.pointerId)};
+ed.onpointermove=e=>{if(!drag)return;const r=ed.getBoundingClientRect();P().ox=drag.ox+(e.clientX-drag.x)/r.width;P().oy=drag.oy+(e.clientY-drag.y)/r.height;redraw()};
+ed.onpointerup=ed.onpointercancel=()=>drag=null;
+ed.addEventListener('wheel',e=>{if(!P())return;e.preventDefault();P().zoom=Math.max(1,Math.min(4,P().zoom*(e.deltaY<0?1.05:.95)));sync();redraw()},{passive:false});
+
+/* fill page */
+function cap(){const g=grid();return g.cols*g.rows}
+$('#fill').onclick=()=>{if(!P())return;const others=photos.reduce((a,p)=>a+(p===P()?0:p.copies),0);P().copies=Math.max(0,cap()-others);thumbs();updateSheet()};
+$('#split').onclick=()=>{if(!photos.length)return;const n=photos.length,c=cap();photos.forEach((p,i)=>p.copies=Math.floor(c/n)+(i<c%n?1:0));thumbs();updateSheet()};
+
+/* export */
+function save(cv,name,type){cv.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)},type,.95)}
+$('#dlOne').onclick=()=>{if(!P())return;const c=document.createElement('canvas');c.width=Math.round(S.w/25.4*300);c.height=Math.round(S.h/25.4*300);drawPhoto(P(),c.getContext('2d'),c.width,c.height);save(c,`passport-${S.w}x${S.h}mm.jpg`,'image/jpeg')};
+function full(){const c=document.createElement('canvas');drawSheet(c,300/25.4);return c}
+$('#dlPng').onclick=()=>save(full(),'passport-sheet.png','image/png');
+$('#dlJpg').onclick=()=>{const c=full(),x=c.getContext('2d');save(c,'passport-sheet.jpg','image/jpeg')};
+$('#print').onclick=()=>{
+  const {W,H}=paper();let st=$('#pst');if(!st){st=document.createElement('style');st.id='pst';document.head.appendChild(st)}
+  st.textContent=`@page{size:${W}mm ${H}mm;margin:0}@media print{#printArea{width:${W}mm;height:${H}mm}}`;
+  $('#printArea img').src=full().toDataURL('image/png');setTimeout(()=>window.print(),150);
+};
+
+/* ---------- automatic background remover ---------- */
+const MP='https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation@0.1.1675465747/';
+let seg=null;
+const stat=t=>$('#bgStatus').textContent=t;
+const timeout=(p,ms)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),ms))]);
+const loadScript=u=>new Promise((ok,no)=>{const e=document.createElement('script');e.src=u;e.onload=ok;e.onerror=no;document.head.appendChild(e)});
+function workCanvas(img){const k=Math.min(1,1400/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c}
+async function aiAlpha(cv){
+  if(!seg){await loadScript(MP+'selfie_segmentation.js');seg=new SelfieSegmentation({locateFile:f=>MP+f});seg.setOptions({modelSelection:0})}
+  const mask=await new Promise((ok,no)=>{seg.onResults(r=>ok(r.segmentationMask));seg.send({image:cv}).catch(no)});
+  const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const x=c.getContext('2d');x.drawImage(mask,0,0,c.width,c.height);
+  const d=x.getImageData(0,0,c.width,c.height).data,n=c.width*c.height,a=new Uint8Array(n);let mn=255;
+  for(let i=0;i<n;i++){a[i]=d[i*4+3];if(a[i]<mn)mn=a[i]}
+  if(mn>=250)for(let i=0;i<n;i++)a[i]=d[i*4];
+  return a;
+}
+function colorAlpha(cv,t){
+  const w=cv.width,h=cv.height,d=cv.getContext('2d').getImageData(0,0,w,h).data,r=[],g=[],b=[],m=Math.max(2,Math.round(Math.min(w,h)*.02));
+  const add=(x,y)=>{const i=(y*w+x)*4;r.push(d[i]);g.push(d[i+1]);b.push(d[i+2])};
+  for(let x=0;x<w;x+=3)for(let k=0;k<m;k++){add(x,k);add(x,h-1-k)}
+  for(let y=0;y<h;y+=3)for(let k=0;k<m;k++){add(k,y);add(w-1-k,y)}
+  const med=a=>a.sort((p,q)=>p-q)[a.length>>1],R=med(r),G=med(g),B=med(b),T=(t*3)*(t*3);
+  const bg=new Uint8Array(w*h),st=new Int32Array(w*h);let sp=0;
+  const push=i=>{if(!bg[i]){const j=i*4,x=d[j]-R,y=d[j+1]-G,z=d[j+2]-B;if(x*x+y*y+z*z<=T){bg[i]=1;st[sp++]=i}}};
+  for(let x=0;x<w;x++){push(x);push((h-1)*w+x)}for(let y=0;y<h;y++){push(y*w);push(y*w+w-1)}
+  while(sp){const i=st[--sp],x=i%w;if(x>0)push(i-1);if(x<w-1)push(i+1);if(i>=w)push(i-w);if(i<w*h-w)push(i+w)}
+  const a=new Uint8Array(w*h);for(let i=0;i<a.length;i++)a[i]=bg[i]?0:255;return a;
+}
+function finish(cv,a0,trim){
+  const w=cv.width,h=cv.height;let cur=Uint8Array.from(a0);
+  for(let i=0;i<cur.length;i++){const v=cur[i];cur[i]=v<90?0:v>170?255:Math.round((v-90)*255/80)}
+  for(let k=0;k<trim;k++){const n=Uint8Array.from(cur);for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x;if(cur[i])n[i]=Math.min(cur[i-1],cur[i+1],cur[i-w],cur[i+w])}cur=n}
+  const mc=document.createElement('canvas');mc.width=w;mc.height=h;const mx=mc.getContext('2d'),id=mx.createImageData(w,h);
+  for(let i=0;i<cur.length;i++){id.data[i*4]=id.data[i*4+1]=id.data[i*4+2]=255;id.data[i*4+3]=cur[i]}
+  mx.putImageData(id,0,0);
+  const bl=document.createElement('canvas');bl.width=w;bl.height=h;const bx=bl.getContext('2d');bx.filter='blur(1.2px)';bx.drawImage(mc,0,0);
+  const out=document.createElement('canvas');out.width=w;out.height=h;const o=out.getContext('2d');o.drawImage(cv,0,0);o.globalCompositeOperation='destination-in';o.drawImage(bl,0,0);return out;
+}
+const share=a=>{let n=0;for(let i=0;i<a.length;i+=7)if(a[i]>128)n++;return n/(a.length/7)};
+async function removeBg(){
+  const p=P();if(!p){stat('Add a photo first.');return}
+  const btn=$('#rmbg');btn.disabled=true;stat('Working…');
+  await new Promise(r=>setTimeout(r,30));
+  try{
+    p.work=workCanvas(p.img);let a=null;p.mode='color';
+    if($('#ai').checked){
+      try{stat('Trying AI model…');a=await timeout(aiAlpha(p.work),25000);const f=share(a);if(f<.03||f>.97)throw new Error('bad mask');p.mode='ai';p.aiA=a}
+      catch(e){a=null;seg=null}
+    }
+    if(!a){stat('Using smart colour mode…');await new Promise(r=>setTimeout(r,30));a=colorAlpha(p.work,+$('#tol').value)}
+    p.cut=finish(p.work,a,+$('#trim').value);p.cutOn=true;$('#cutOn').checked=true;redraw();
+    stat(p.mode==='ai'?'Done with AI. Use Edge trim to clean the outline.':'Done in colour mode (best on plain backgrounds). If parts are missing, change Sensitivity.');
+  }catch(e){stat('Could not remove the background for this photo.')}
+  btn.disabled=false;
+}
+function rebuild(){const p=P();if(!p||!p.cut)return;const a=p.mode==='ai'?p.aiA:colorAlpha(p.work,+$('#tol').value);p.cut=finish(p.work,a,+$('#trim').value);redraw()}
+$('#rmbg').onclick=removeBg;
+$('#cutOn').onchange=()=>{const p=P();if(p){p.cutOn=$('#cutOn').checked&&!!p.cut;if(!p.cut)$('#cutOn').checked=false;redraw()}};
+['tol','trim'].forEach(k=>$('#'+k).addEventListener('input',()=>{outs();clearTimeout(rebuild.t);rebuild.t=setTimeout(rebuild,120)}));
+
+sizeEditor();setSize();outs();thumbs();
+</script>
+</body>
+</html>
